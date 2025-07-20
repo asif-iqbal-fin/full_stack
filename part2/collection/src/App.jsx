@@ -27,16 +27,17 @@ return <Course course={course} />
 const Course = ({course}) => {
   return (
     <div>
-      <Header course={course.name} />
+      <Header coursename={course.name} />
       <Content parts={course.parts}/>
+      <Total parts={course.parts} />
     </div>
   )
 }
 
-const Header = (props) =>{
+const Header = ({coursename}) =>{
   return (
     <div>
-      <h1>{props.course}</h1>
+      <h1>{coursename}</h1>
     </div>
   )
 }
@@ -49,20 +50,25 @@ return(
   )
 }
 
-const Part = (props) =>{
+const Part = ({name,excercise}) =>{
   return(
     <div>
       <p>
-        {props.name} {props.excercise}
+        {name} {excercise}
       </p>
     </div>
   )
 }
 
-const Total = (props) =>{
+const Total = ({parts}) =>{
+  const totalValue = parts.reduce((s,p) => {
+    console.log('Values of past n current', s ,p)
+    console.log('accumulated value', s)
+    return s + p.exercises
+  },0)
   return(
     <div>
-      <p>Number of exercises {props.parts[0].excercises + props.parts[1].excercises + props.parts[2].excercises}</p>
+      <p>Number of exercises {totalValue}</p>
     </div>
   )
 }
