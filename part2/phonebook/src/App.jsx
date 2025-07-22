@@ -33,6 +33,21 @@ const App = () => {
     }
   }
 
+  const removePerson = (personToRemove) => {
+    if(window.confirm(`Delete ${personToRemove.name} ?`)){
+    console.log('Id to delete:',personToRemove.id)
+    peopleService.remove(personToRemove.id)
+    .then(response => {
+      console.log('Person removed successfully',response.data)
+      const personsSaved = persons.filter((person) => person.id !== personToRemove.id)
+      setPersons(personsSaved)
+    })
+  }
+  else{
+    console.log(`User cancelled delete of ${personToRemove.name}`)
+  }
+  }
+
   const personsToShow = (filter === '')
   ? persons
   : persons.filter(person => person.name.toLowerCase().includes(filter))
@@ -60,7 +75,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm name={newName} number={number} onNameChange={handleNameChange} onNumberChange={handleNumberChange} onSubmit={addPerson} />
       <h3>Numbers</h3>
-      <Numbers personsToShow={personsToShow} />
+      <Numbers personsToShow={personsToShow} removePerson={removePerson} />
     </div>
   )
 }
@@ -95,12 +110,19 @@ const PersonForm = ({name, number, onNameChange, onNumberChange, onSubmit}) => {
   )
 }
 
-const Numbers = ({personsToShow}) => {
-  return(
-    <ul>
-      {personsToShow.map(person => <p key={person.name}>{person.name} {person.number}</p>)}
-    </ul>
-  )
+const Person = ({person,deletePerson}) => {
+  return(<div key={person.id}>
+    {person.name} {person.number} {''}
+    <button onClick={deletePerson}>Delete</button>
+  </div>)
 }
+
+const Numbers = ({ personsToShow, removePerson }) => (
+  <ul>
+    {personsToShow.map(person => (
+      <Person key={person.id} person={person} deletePerson={() => removePerson(person)} />
+    ))}
+  </ul>
+);
 
 export default App
