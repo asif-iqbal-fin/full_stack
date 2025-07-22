@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import peopleService from './services/people'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -8,10 +9,10 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
+    peopleService.getAll()
     .then(response => {
-      console.log('promise fulfilled')
-      setPersons(response.data)
+      console.log('Response from Service', response)
+      setPersons(response)
     })
   },[])
 
@@ -20,10 +21,9 @@ const App = () => {
     console.log('Person to add',newName)
     const personObj = {name: newName, number: number}
     if(persons.findIndex(({name}) => name === newName) == -1){
-      axios
-      .post('http://localhost:3001/persons', personObj)
+      peopleService.create(personObj)
       .then(response => {
-        setPersons(persons.concat(response.data))
+        setPersons(persons.concat(response))
         setNewName('')
         setNumber('')
       })
