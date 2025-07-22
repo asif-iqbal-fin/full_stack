@@ -29,7 +29,22 @@ const App = () => {
       })
       
     }else{
-      alert(`${newName} is already added to phonebook`)
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new number`))
+      {
+        const personToUpdate = persons.find(({name}) => name === newName)
+        console.log({personToUpdate})
+        const updatedPerson = {...personToUpdate, number:number}
+        console.log(updatedPerson)
+        const revisedPersons = persons.map(person => person.name === newName ? updatedPerson :  person)
+        console.log(revisedPersons)
+        peopleService.update(updatedPerson.id, updatedPerson)
+        .then(response => {
+          console.log(response)
+          setPersons(revisedPersons)
+        })
+      }else{
+        console.log('User cancelled update')
+      }
     }
   }
 
