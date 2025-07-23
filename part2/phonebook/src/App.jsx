@@ -7,6 +7,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [number,setNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message,setMessage] = useState(null)
 
   useEffect(() => {
     peopleService.getAll()
@@ -24,6 +25,10 @@ const App = () => {
       peopleService.create(personObj)
       .then(response => {
         setPersons(persons.concat(response))
+        setMessage(`Added ${personObj.name}`)
+        setTimeout(() => {
+          setMessage(null)
+        },5000)
         setNewName('')
         setNumber('')
       })
@@ -85,6 +90,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} messageClass='general'/>
       <Filter value={filter} onChange={handleFilterChange} />
       <div>debug: {newName}</div>
       <h3>add a new</h3>
@@ -138,6 +144,17 @@ const Numbers = ({ personsToShow, removePerson }) => (
       <Person key={person.id} person={person} deletePerson={() => removePerson(person)} />
     ))}
   </ul>
-);
+)
+
+const Notification = ({message,messageClass}) => {
+  if(message === null){
+    return null
+  }
+  return(
+    <div className={messageClass}>
+      {message}
+    </div>
+  )
+}
 
 export default App
