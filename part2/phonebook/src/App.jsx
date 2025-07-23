@@ -8,6 +8,7 @@ const App = () => {
   const [number,setNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [message,setMessage] = useState(null)
+  const [messageClass, setMessageClass] = useState('')
 
   useEffect(() => {
     peopleService.getAll()
@@ -61,6 +62,18 @@ const App = () => {
       console.log('Person removed successfully',response.data)
       const personsSaved = persons.filter((person) => person.id !== personToRemove.id)
       setPersons(personsSaved)
+      setMessage(`Information of ${personToRemove.name} removed from server`)
+      setMessageClass('general')
+      setTimeout(() =>{
+        setMessage(null)
+      },5000)
+    })
+    .catch(() => {
+      setMessage(`Information of ${personToRemove.name} has already been removed from server`)
+      setMessageClass('error')
+      setTimeout(() =>{
+        setMessage(null)
+      },5000)
     })
   }
   else{
@@ -90,7 +103,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} messageClass='general'/>
+      <Notification message={message} messageClass={messageClass}/>
       <Filter value={filter} onChange={handleFilterChange} />
       <div>debug: {newName}</div>
       <h3>add a new</h3>
