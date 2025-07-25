@@ -63,13 +63,24 @@ app.delete('/api/persons/:id', (request,response) => {
 app.post('/api/persons', (request,response) => {
     const id = Math.round(Math.random() * 1000)
 
-    const person = request.body
-    person.id = String(id)
+    const body = request.body
+    const duplicatePerson = persons.find(p => p.name === body.name)
+    if(!body.name | !body.number | (duplicatePerson !== undefined)){
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
 
-    persons = persons.concat(person)
+    const newPerson = {
+        name: body.name,
+        number : body.number,
+        id: String(id)
+    }
+
+    persons = persons.concat(newPerson)
     
-    console.log(person)
-    response.json(person)
+    console.log(newPerson)
+    response.json(newPerson)
 })
 
 const PORT = 3001
