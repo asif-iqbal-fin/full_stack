@@ -1,5 +1,15 @@
 import express from 'express'
 import morgan from 'morgan'
+import uuid from 'node-uuid'
+
+morgan.token('id', (req) =>{
+    return req.id
+})
+
+const assignId = (req,res, next) =>{
+    req.id = uuid.v4()
+    next()
+}
 
 const app = express()
 
@@ -27,7 +37,8 @@ var persons = [
 ]
 
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(assignId)
+app.use(morgan(':id :method :url :response-time'))
 
 app.get('/api/persons',(request,response) => {
     console.log('Successfuully fetched persons JSON')
