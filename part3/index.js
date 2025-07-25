@@ -1,4 +1,5 @@
-import express, { json, request, response } from 'express'
+import express from 'express'
+import morgan from 'morgan'
 
 const app = express()
 
@@ -26,6 +27,7 @@ var persons = [
 ]
 
 app.use(express.json())
+app.use(morgan('tiny'))
 
 app.get('/api/persons',(request,response) => {
     console.log('Successfuully fetched persons JSON')
