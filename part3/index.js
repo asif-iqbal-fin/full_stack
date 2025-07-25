@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { request } from 'express'
 
 const app = express()
 
@@ -36,6 +36,18 @@ app.get('/info', (request,response) => {
     console.log(personInfo)
     response.end(personInfo)
 
+})
+
+app.get('/api/persons/:id', (request,response) =>{
+    const id = request.params.id
+    const person = persons.find(p => p.id === id)
+    console.log(person)
+    
+    if(person){
+        response.json(person)
+    }else{
+        response.status(400).end()
+    }
 })
 
 const PORT = 3001
