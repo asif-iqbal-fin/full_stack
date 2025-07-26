@@ -27,6 +27,7 @@ const App = () => {
       .then(response => {
         setPersons(persons.concat(response))
         setMessage(`Added ${personObj.name}`)
+        setMessageClass('general')
         setTimeout(() => {
           setMessage(null)
         },5000)
