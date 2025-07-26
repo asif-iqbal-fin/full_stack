@@ -1,6 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import uuid from 'node-uuid'
+import cors from 'cors'
 
 morgan.token('id', (req) =>{
     return req.id
@@ -36,6 +37,7 @@ var persons = [
     }
 ]
 
+app.use(cors())
 app.use(express.json())
 app.use(assignId)
 app.use(morgan(':id :method :url :response-time'))
@@ -96,7 +98,7 @@ app.post('/api/persons', (request,response) => {
     response.json(newPerson)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
