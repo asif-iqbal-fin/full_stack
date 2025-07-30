@@ -24,8 +24,8 @@ const App = () => {
     const personObj = {name: newName, number: number}
     if(persons.findIndex(({name}) => name === newName) == -1){
       peopleService.create(personObj)
-      .then(response => {
-        setPersons(persons.concat(response))
+      .then(createdPerson => {
+        setPersons(persons.concat(createdPerson))
         setMessage(`Added ${personObj.name}`)
         setMessageClass('general')
         setTimeout(() => {
@@ -33,6 +33,14 @@ const App = () => {
         },5000)
         setNewName('')
         setNumber('')
+      })
+      .catch(error => {
+        setMessage(error.response.data.error)
+        setMessageClass('error')
+        setTimeout(() => {
+          setMessage(null)
+        },5000)
+        console.log('Error from frontend ',error.response.data.error)
       })
       
     }else{
