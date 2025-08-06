@@ -4,33 +4,26 @@ const User = require('../models/user')
 const { request } = require('../app')
 const { error } = require('../utils/logger')
 
-usersRouter.get('/', (request,response) =>{
-    User.find({}).then(users => {
-        response.json(users)
-    })
+usersRouter.get('/', async (request,response) => {
+    const users = await User.find({}).populate('blogs',{title: 1, url: 1, author: 1})
+    response.json(users)
+
 })
 
-usersRouter.post('/', (request,response,next) => {
+usersRouter.post('/', async(request,response,next) => {
     const {username,name,password} = request.body
     
     const saltRounds = 10
-    
-    bcrypt.hash(password,saltRounds).then((result) => {
-        passwordHash = result
-         user = new User({
-            username,
-            name,
-            passwordHash
-         })
 
-         user.save()
-            .then((savedUser) => {
-                response.status(201).json(savedUser)
-            })
-            .catch(error => next(error))
-
+    const passwordHash = await bcrypt.hash(password,saltRounds)
+    const user = new User({
+        username,
+        name,
+        passwordHash
     })
-    
+
+    const savedUser = await user.save()
+    response.status(201).json(savedUser)
 })
 
 module.exports = usersRouter
