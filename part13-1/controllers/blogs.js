@@ -12,7 +12,7 @@ router.post('/', async(req,res) => {
         const blog = await Blog.create(req.body)
         res.json(blog)
     } catch (error) {
-        res.status(400).json({error})
+        res.status(400).json({error: 'Blog cannot be created'})
     }
 })
 
@@ -41,7 +41,7 @@ router.put('/:id', async(req,res) => {
         await blog.save()
         res.json(blog)
     }else{
-        res.status(404).end()
+        res.status(404).json({error: 'Blog Id not found'})
     }
 })
 
