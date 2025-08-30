@@ -1,6 +1,6 @@
 const router = require('express').Router()
 
-const { Blog } = require('../models')
+const { Blog, User } = require('../models')
 
 router.get('/', async (req,res) => {
     const blogs = await Blog.findAll()
@@ -9,7 +9,8 @@ router.get('/', async (req,res) => {
 
 router.post('/', async(req,res) => {
     try {
-        const blog = await Blog.create(req.body)
+        const user = await User.findOne()
+        const blog = await Blog.create({...req.body, userId:user.id})
         res.json(blog)
     } catch (error) {
         res.status(400).json({error: 'Blog cannot be created'})
