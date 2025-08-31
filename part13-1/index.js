@@ -12,7 +12,6 @@ const { errorHandler, tokenExtractor } = require('./utils/middleware')
 
 app.use(express.json())
 app.use(errorHandler)
-app.use(tokenExtractor)
 
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
