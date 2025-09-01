@@ -2,7 +2,7 @@ const router = require('express').Router()
 
 const { Blog, User } = require('../models')
 const { SECRET } = require('../utils/config')
-const { Op } = require('sequelize')
+const { Op, where } = require('sequelize')
 const { sequelize } = require('../utils/db')
 const { tokenExtractor } = require('../utils/middleware')
 
@@ -33,7 +33,11 @@ router.get('/', async (req,res) => {
 router.post('/', tokenExtractor, async(req,res) => {
     try {
         const user = await User.findByPk(req.decodedToken.id)
-        const blog = await Blog.create({...req.body, userId:user.id, date: new Date()})
+        const blog = await Blog.build({...req.body, userId:user.id, date: new Date()})
+        if(blog.year <1991 || blog.year >new Date().getFullYear()){
+            return res.status(401).json({error: 'Blog created year is out of 1991 and this year'})
+        }
+        await blog.save()
         res.json(blog)
     } catch (error) {
         res.status(400).json({error: 'Blog cannot be created'})
