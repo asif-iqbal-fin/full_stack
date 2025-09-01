@@ -9,7 +9,7 @@ const usersRouter = require('./controllers/users')
 const authorsRouter = require('./controllers/authors')
 const loginRouter = require('./controllers/login')
 
-const { errorHandler, tokenExtractor } = require('./utils/middleware')
+const { errorHandler } = require('./utils/middleware')
 
 app.use(express.json())
 app.use(errorHandler)
