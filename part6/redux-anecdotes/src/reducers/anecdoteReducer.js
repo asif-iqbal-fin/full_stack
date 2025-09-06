@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice,current } from '@reduxjs/toolkit'
 
 const anecdotesAtStart = [
   'If it hurts, do it more often',
@@ -36,9 +36,10 @@ const anecdoteSlice = createSlice({
     },
     voteFor(state,action){
       const id = action.payload
-      console.log(id)
       const anecdoteToVote = state.find(ac => ac.id === id)
       const votedAnecdote = {...anecdoteToVote, votes: anecdoteToVote.votes + 1 }
+
+      console.log(current(state))
       return state.map(anecdote => anecdote.id !== id? anecdote : votedAnecdote)
     }
   }
