@@ -1,15 +1,11 @@
 /* eslint-disable no-case-declarations */
 import { createSlice,current } from '@reduxjs/toolkit'
+import anecdoteService from '../services/anecdotes'
 
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState: [],
   reducers: {
-    createAnecdote(state,action){
-      state = [...state].sort((a,b) => b.votes - a.votes)
-      state.push(action.payload)
-      return state
-    },
     voteFor(state,action){
       const id = action.payload
       const anecdoteToVote = state.find(ac => ac.id === id)
@@ -18,11 +14,29 @@ const anecdoteSlice = createSlice({
       console.log(current(state))
       return state.map(anecdote => anecdote.id !== id? anecdote : votedAnecdote)
     },
+    addAnecdote(state,action){
+      state.push(action.payload)
+    },
     setAnecdotes(state,action){
       return action.payload
     }
   }
 })
 
-export const { createAnecdote, voteFor, setAnecdotes } = anecdoteSlice.actions
+export const { voteFor, addAnecdote, setAnecdotes } = anecdoteSlice.actions
+
+export const initializeAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch(setAnecdotes(anecdotes))
+  }
+}
+
+export const createAnecdote = content => {
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.addAnecdote(content)
+    dispatch(addAnecdote(newAnecdote))
+  }
+}
+
 export default anecdoteSlice.reducer
