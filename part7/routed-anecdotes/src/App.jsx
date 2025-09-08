@@ -1,18 +1,31 @@
 import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 
 const padding = {
-    paddingRight: 5
-  }
+  paddingRight: 5
+}
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => 
+        <li key={anecdote.id} >
+          <Link to={`/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>)}
     </ul>
   </div>
 )
+
+const Anecdote = ({anecdote}) => {
+  return(
+    <div>
+      <h2>{anecdote.content} by {anecdote.author}</h2>
+      <div>has {anecdote.votes} votes</div>
+      <div>for more infomation see <Link to={anecdote.info}>{anecdote.info}</Link></div>
+    </div>
+  )
+}
 
 const About = () => (
   <div>
@@ -66,7 +79,7 @@ const CreateNew = (props) => {
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
         </div>
         <button>create</button>
       </form>
@@ -114,21 +127,25 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const match = useMatch('/:id')
+  const anecdote = match? anecdotes.find(anecdote => anecdote.id === Number(match.params.id)):null
+
   return (
-    <Router>
-        <div>
-          <Link style={padding} to="/">anecdotes</Link>
-          <Link style={padding} to="/create">Create New</Link>
-          <Link style={padding} to="/about">about</Link>
-        </div>
-        <h1>Software anecdotes</h1>
-        <Routes>
-          <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />}/>
-          <Route path='/create' element={<CreateNew addNew={addNew} />} />
-          <Route path='/about' element={<About />}/>
-        </Routes>          
-        <Footer />
-      </Router>
+    <div>
+      <h1>Software anecdotes</h1>
+      <div>
+        <Link style={padding} to='/'>anecdotes</Link>
+        <Link style={padding} to='/create'>Create New</Link>
+        <Link style={padding} to='/about'>about</Link>
+      </div>
+      <Routes>
+        <Route path='/:id' element={<Anecdote anecdote={anecdote}/>} />
+        <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
+        <Route path='/create' element={<CreateNew addNew={addNew} />} />
+        <Route path='/about' element={<About />} />
+      </Routes>
+      <Footer />
+    </div>
   )
 }
 
