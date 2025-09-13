@@ -132,7 +132,7 @@ const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: (root,args) => (args.genre !== null) ? books.filter(book => book.genres.includes(args.genre)) : books,
+    allBooks: () => books,
     allAuthors: () => authors.map((author) => ({...author,bookCount:bookOfAuthor(author)}))
   },
   Mutation:{
