@@ -1,34 +1,14 @@
 import { useState } from "react";
-import { gql } from '@apollo/client'
 import { useQuery } from '@apollo/client/react'
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import { Link, Route, Routes } from "react-router-dom";
+import { ALL_AUTHORS, ALL_BOOKS } from "./queries";
 
 const padding = {
   paddingRight: 5
 }
-
-const ALL_AUTHORS = gql`
-query {
-  allAuthors {
-    name
-    born
-    bookCount
-  }
-}
-`
-
-const ALL_BOOKS = gql`
-query AllBooks {
-  allBooks {
-    title
-    author
-    published
-  }
-}
-`
 
 const App = () => {
   const result = useQuery(ALL_AUTHORS)
