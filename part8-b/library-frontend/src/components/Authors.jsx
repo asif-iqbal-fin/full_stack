@@ -1,22 +1,23 @@
-import { useState } from "react"
+import { useState } from 'react';
+import Select from 'react-select';
 import { ALL_AUTHORS, ALL_BOOKS, UPDATE_AUTHOR } from "../queries"
 import { useMutation } from "@apollo/client/react"
 
 /* eslint-disable react/prop-types */
 const Authors = ({authors}) => {
-  const[name,setName] = useState('')
-  const[born,setBorn] = useState(1900)
+  const [born, setBorn] = useState(1900)
+  const [selectedAuthor, setSelectedAuthor] = useState(null);
 
   const [updateAuthor] = useMutation(UPDATE_AUTHOR,{refetchQueries: [{query: ALL_AUTHORS}, {query:ALL_BOOKS}]})
 
   const submit = async(event) => {
     event.preventDefault()
-    console.log(`Name : ${name}`)
+    console.log(`Name : ${selectedAuthor ? selectedAuthor.label : 'None'}`);
     console.log(`Born : ${born}`)
 
-    updateAuthor({variables: {name,setBornTo:born}})
+    updateAuthor({variables: {name: selectedAuthor.value, setBornTo: born}})
 
-    setName('')
+    setSelectedAuthor(null)
     setBorn(1900)
   }
 
@@ -44,10 +45,13 @@ const Authors = ({authors}) => {
         <form onSubmit={submit}>
           <div>
             name
-            <input 
-              value={name} 
-              onChange={({target}) => setName(target.value)}>
-            </input>
+              <Select
+                options={authors.map(author => ({ value: author.name, label: author.name }))}
+                value={selectedAuthor}
+                onChange={setSelectedAuthor}
+                placeholder="Select author..."
+                isClearable
+              />
           </div>
           <div>
             born
