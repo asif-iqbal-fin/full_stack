@@ -1,11 +1,6 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
 const { v1: uuid } = require('uuid')
-const mongoose = require('mongoose')
-mongoose.set('strictQuery',false)
-const Book = require('./models/book')
-const Author = require('./models/author')
-
 
 let authors = [
   {
@@ -103,27 +98,12 @@ let books = [
   you can remove the placeholder query once your first one has been implemented 
 */
 
-require('dotenv').config()
-
-const MONGODB_URI = process.env.MONGODB_URI
-
-console.log('connecting to ', MONGODB_URI)
-
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    console.log('connected to MongoDB')
-  })
-  .catch((error) => {
-    console.log('error connecting to MongoDB', error.message)
-  })
-
 const typeDefs = `
   type Book {
     title:String!
-    author:Author!
+    author:String!
     published:Int!
     genres:[String!]
-    id: ID!
   }
   type Author{
     name:String!
@@ -141,7 +121,7 @@ const typeDefs = `
         title: String!
         author:String!
         published:Int!
-        genres:[String!]):Book!
+        genres:[String!]):Book
     editAuthor(
         name:String!
         setBornTo:Int!):[Author!]!
@@ -150,11 +130,9 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    bookCount: async () => Book.collection.countDocuments(),
-    authorCount: () => Author.collection.countDocuments(),
-    allBooks: async () => {
-      return Book.find({})
-    },
+    bookCount: () => books.length,
+    authorCount: () => authors.length,
+    allBooks: () => books,
     allAuthors: () => authors.map((author) => ({...author,bookCount:bookOfAuthor(author)}))
   },
   Mutation:{
